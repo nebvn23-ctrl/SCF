@@ -23,7 +23,7 @@ export const SITE = {
    * disabled. Paste the real address here when you have it, e.g.
    *   contractAddress: '7xKX...pump',
    */
-  contractAddress: '0x44fc502a4717e85e2636d15e2dca1c448f67438c',
+  contractAddress: '0xefc2da404deadf8eeb845b0f0f0888d78d026c75',
 
   /**
    * X PROFILE URL
