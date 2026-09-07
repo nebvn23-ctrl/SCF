@@ -1,0 +1,614 @@
+/* ===========================================================================
+   BASE — tokens, typography, shared parts (buttons, CA, tape, grain, footer)
+   Palette is strictly monochrome. Photography is desaturated in CSS.
+   =========================================================================== */
+
+:root {
+  --ink: #0a0a0a;
+  --ink-2: #131313;
+  --ink-3: #1c1c1c;
+  --paper: #e9e5db;
+  --paper-2: #dcd7ca;
+  --white: #ffffff;
+  --steel: #8d9296;
+  --steel-dim: #5b6064;
+
+  --rule-light: rgba(255, 255, 255, 0.16);
+  --rule-dark: rgba(10, 10, 10, 0.2);
+
+  --pad: clamp(1.15rem, 4.2vw, 4.5rem);
+  --maxw: 1560px;
+
+  --f-display: 'Anton', 'Arial Narrow', 'Haettenschweiler', sans-serif;
+  --f-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* photographic treatment — monochrome, texture preserved */
+  --photo: grayscale(1) contrast(1.07) brightness(0.98);
+  --ease: cubic-bezier(0.2, 0.8, 0.24, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--f-mono);
+  font-size: clamp(0.82rem, 0.55vw + 0.7rem, 0.95rem);
+  line-height: 1.62;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--white);
+  color: var(--ink);
+}
+
+/* ---------- typography primitives ---------- */
+
+h1,
+h2,
+h3 {
+  font-family: var(--f-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.82;
+  letter-spacing: 0.005em;
+  margin: 0;
+  /* Anton's uppercase has no descenders worth clipping, but leave room */
+  padding-bottom: 0.04em;
+}
+
+.idx {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin: 0 0 1.4rem;
+}
+
+.idx--dark {
+  color: var(--steel-dim);
+}
+
+.outline {
+  color: transparent;
+}
+
+/* Only strip the fill when a stroke can actually be painted, so the words
+   can never become invisible on browsers without text-stroke support. */
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .outline {
+    -webkit-text-stroke: clamp(1px, 0.14vw, 2.5px) currentColor;
+  }
+}
+@supports not (-webkit-text-stroke: 1px currentColor) {
+  .outline {
+    color: inherit;
+    opacity: 0.45;
+  }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- focus + skip link ---------- */
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.skip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  transform: translateY(-120%);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.85rem 1.3rem;
+}
+
+.skip:focus {
+  transform: translateY(0);
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 46px;
+  padding: 0.7rem 1.5rem;
+  border: 1px solid var(--white);
+  background: transparent;
+  color: var(--white);
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 0;
+  transition:
+    background-color 0.18s var(--ease),
+    color 0.18s var(--ease),
+    transform 0.08s ease;
+}
+
+.btn--solid {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.btn--lg {
+  min-height: 60px;
+  padding: 1rem 2.4rem;
+  font-size: 0.86rem;
+}
+
+.btn:hover:not(:disabled) {
+  background: transparent;
+  color: var(--white);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.is-unavailable {
+  border-style: dashed;
+  border-color: var(--steel-dim);
+  background: transparent;
+  color: var(--steel-dim);
+  cursor: not-allowed;
+}
+
+/* ---------- contract address ---------- */
+
+.ca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid var(--rule-light);
+  max-width: 100%;
+  width: fit-content;
+  min-width: min(100%, 320px);
+}
+
+.ca--light {
+  border-color: var(--rule-dark);
+}
+
+.ca__label {
+  display: flex;
+  align-items: center;
+  padding: 0.55rem 0.9rem;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.ca__value {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.55rem 1rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.ca__value--empty {
+  color: var(--steel);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.ca__btn {
+  border: 0;
+  border-left: 1px solid var(--rule-light);
+  background: transparent;
+  color: inherit;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.1rem;
+  min-height: 44px;
+  cursor: pointer;
+  transition:
+    background-color 0.16s var(--ease),
+    color 0.16s var(--ease);
+}
+
+.ca--light .ca__btn {
+  border-left-color: var(--rule-dark);
+}
+
+.ca__btn:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.ca--light .ca__btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ca__btn:disabled {
+  color: var(--steel-dim);
+  cursor: not-allowed;
+}
+
+.ca__status {
+  flex: 1 0 100%;
+  margin: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel);
+  padding: 0 1rem;
+  min-height: 1.6em;
+}
+
+.ca__status:empty {
+  padding: 0;
+}
+
+/* full value is always in the accessibility tree; only the visual form swaps */
+.ca__short {
+  display: none;
+}
+
+@media (max-width: 620px) {
+  .ca__full {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ca__short {
+    display: inline;
+  }
+}
+
+/* ---------- running tape ---------- */
+
+.tape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-top: 1px solid var(--rule-light);
+  border-bottom: 1px solid var(--rule-light);
+  background: var(--ink);
+}
+
+.tape__track {
+  display: flex;
+  width: max-content;
+  animation: tape 44s linear infinite;
+}
+
+.tape__track span {
+  font-family: var(--f-display);
+  font-size: clamp(0.9rem, 1.5vw, 1.35rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--steel);
+  padding: 0.42rem 0;
+  white-space: nowrap;
+}
+
+@keyframes tape {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- grain ---------- */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- footer ---------- */
+
+.ftr {
+  position: relative;
+  z-index: 2;
+  background: var(--ink);
+  border-top: 1px solid var(--rule-light);
+  padding: clamp(2rem, 5vw, 3.4rem) var(--pad);
+}
+
+.ftr__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.ftr__brand {
+  margin: 0;
+  font-family: var(--f-display);
+  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.ftr__brand span {
+  color: var(--steel-dim);
+}
+
+.ftr__x {
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: none;
+  border: 0;
+  padding: 0.5rem 0;
+  text-decoration: none;
+  box-shadow: inset 0 -1px 0 var(--white);
+  cursor: pointer;
+}
+
+.ftr__x:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.ftr__x:disabled,
+.ftr__x.is-unavailable {
+  color: var(--steel-dim);
+  box-shadow: inset 0 -1px 0 var(--steel-dim);
+  cursor: not-allowed;
+}
+
+.ftr__disc {
+  max-width: 62ch;
+  margin: 1.4rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.75;
+  color: var(--steel-dim);
+}
+
+/* ---------- reveal system (scoped to .js so no-JS shows everything) ---------- */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.7s var(--ease);
+}
+
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js [data-reveal],
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .tape__track {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- scroll progress hairline ---------- */
+
+.hdr__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  background: var(--white);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ---------- line-by-line mask reveals ---------- */
+
+/* The parent only carries the observer; the lines do the moving. */
+.js .rvl-lines[data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+.js .rvl-lines > * {
+  display: block;
+  clip-path: inset(0 0 108% 0);
+  transform: translateY(0.14em);
+  transition:
+    clip-path 0.78s var(--ease),
+    transform 0.78s var(--ease);
+}
+
+.js .rvl-lines.is-in > * {
+  clip-path: inset(0 0 -30% 0);
+  transform: none;
+}
+
+.js .rvl-lines > *:nth-child(2) {
+  transition-delay: 0.09s;
+}
+.js .rvl-lines > *:nth-child(3) {
+  transition-delay: 0.18s;
+}
+.js .rvl-lines > *:nth-child(4) {
+  transition-delay: 0.27s;
+}
+
+/* ---------- image mask reveal ----------
+   The clip lives on the child, never on the observed element: a clip-path on
+   the target itself shrinks its intersection rect to nothing and the
+   IntersectionObserver would never fire. */
+
+.js [data-reveal='mask'] {
+  opacity: 1;
+  transform: none;
+}
+
+.js [data-reveal='mask'] > img {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.95s var(--ease);
+}
+
+.js [data-reveal='mask'].is-in > img {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---------- link + button microinteractions ---------- */
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--white);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.32s var(--ease);
+}
+
+.btn--ghost:hover:not(:disabled)::before,
+.hero__actions .btn--ghost:focus-visible:not(:disabled)::before {
+  transform: scaleX(1);
+}
+
+.btn--solid::before {
+  transform: scaleX(1);
+  transform-origin: 100% 50%;
+}
+
+.btn--solid:hover:not(:disabled)::before {
+  transform: scaleX(0);
+}
+
+.btn:disabled::before,
+.is-unavailable::before {
+  display: none;
+}
+
+.hdr__nav a {
+  position: relative;
+}
+
+.hdr__nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.28s var(--ease);
+}
+
+.hdr__nav a:hover::after,
+.hdr__nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .rvl-lines > *,
+  .js .rvl-lines.is-in > *,
+  .js [data-reveal='mask'] > img,
+  .js [data-reveal='mask'].is-in > img {
+    clip-path: none;
+    transform: none;
+    transition: none;
+  }
+}
