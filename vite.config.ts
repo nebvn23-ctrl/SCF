@@ -12,5 +12,5 @@ export default defineConfig({
    *   base: '/repo-name/',
    * Every media path is built from this value, so that one line is all it takes.
    */
-  base: '/',
+  base: '/smoking-chicken-fish/',
 })
